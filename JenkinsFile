@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone another repository') {
+            steps {
+                dir('subdir')
+                {
+                    checkout scm: [
+                        $class: 'GitSCM',
+                        branches: [[name: 'refs/tags/specific-tests']],
+                        userRemoteConfigs: [
+                            [
+                                url: 'https://github.com/Bilal1997/flatbuffers.git',
+                                credentialsId:'8822745c-34b5-40b0-bee2-d9990bb32888'
+                            ]]
+                    ]
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                echo "workspace = ${WORKSPACE}"
+                echo "Stepping into subdir..."
+                sh "cd subdir"
+                sh "pwd"
+                sh "cat subdir/JenkinsFile"
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+    }
+}
